@@ -183,15 +183,15 @@ Setelah itu silahkan lanjutkan untuk mengimpor image Ubuntu ke GNS3 [disini](#me
    ![test-image-7](images/test-image-7.png)
 7. Akses console dari node, dan coba ping ke google, jika berhasil maka settingan Anda benar <br/>
    ![using-internet-4](images/using-internet-4.png)
-8. Node ini akan nanti digunakan sebagai router untuk modul ini, ganti nama node ini menjadi `Eru` dengan fitur `Change hostname` di node, dan juga ganti symbol ke simbol router dengan fitur `Change symbol`
+8. Node ini akan nanti digunakan sebagai router untuk modul ini, ganti nama node ini menjadi `Eru` dengan fitur `Change hostname` di node, dan juga ganti symbol ke simbol router dengan fitur `Change symbol` <br/>
    ![using-internet-5](images/using-internet-5.png)
 
 ### Membuat Topologi
 1. Tambahkan beberapa node ethernet switch dan ubuntu, lalu buat hubungan antar node dan nama-nama dari node hingga seperti di gambar <br/>
-  ![create-topology-1](images/create-topology-1.jpg)
+  ![create-topology-1](images/create-topology-1.png)
 2. Gunakan fitur `Change hostname` untuk merubah nama-nama dari node
 3. Lalu kita setting network masing-masing node dengan fitur `Edit network configuration` seperti yang ditunjukkan [disini](#setup-ip-di-node) sebelumnya, kita bisa menghapus semua settingnya dan mengisi dengan settingan di bawah
-  - Foosha
+  - Eru
   ```
   auto eth0
   iface eth0 inet dhcp
@@ -206,7 +206,7 @@ Setelah itu silahkan lanjutkan untuk mengimpor image Ubuntu ke GNS3 [disini](#me
   	address [Prefix IP].2.1
   	netmask 255.255.255.0
   ```
-  - Loguetown
+  - Melkor
   ```
   auto eth0
   iface eth0 inet static
@@ -214,7 +214,7 @@ Setelah itu silahkan lanjutkan untuk mengimpor image Ubuntu ke GNS3 [disini](#me
   	netmask 255.255.255.0
   	gateway [Prefix IP].1.1
   ```
-  - Alabasta
+  - Manwe
   ```
   auto eth0
   iface eth0 inet static
@@ -222,7 +222,7 @@ Setelah itu silahkan lanjutkan untuk mengimpor image Ubuntu ke GNS3 [disini](#me
   	netmask 255.255.255.0
   	gateway [Prefix IP].1.1
   ```
-  - EniesLobby
+  - Varda
   ```
   auto eth0
   iface eth0 inet static
@@ -230,7 +230,7 @@ Setelah itu silahkan lanjutkan untuk mengimpor image Ubuntu ke GNS3 [disini](#me
   	netmask 255.255.255.0
   	gateway [Prefix IP].2.1
   ```
-  - Water7
+  - Ulmo
   ```
   auto eth0
   iface eth0 inet static
@@ -242,30 +242,33 @@ Setelah itu silahkan lanjutkan untuk mengimpor image Ubuntu ke GNS3 [disini](#me
 - **Gateway**: Jalur pada jaringan yang harus dilewati paket-paket data untuk dapat masuk ke jaringan yang lain.
 
 4. Restart semua node
-5. Cek semua node ubuntu apakah sudah memiliki ip yang sesuai dengan settingan dengan command `ip a`. Berikut adalah contoh untuk node `Foosha` dengan Prefix IP `10.40`, sesuaikan dengan Prefix IP kelompok kalian masing-masing
-![create-topology-2](images/create-topology-2.jpg)
+5. Cek semua node ubuntu apakah sudah memiliki ip yang sesuai dengan settingan dengan command `ip a`. Berikut adalah contoh untuk node `Eru` dengan Prefix IP `10.40`, sesuaikan dengan Prefix IP kelompok kalian masing-masing
+  ![create-topology-2](images/create-topology-2.png)
 6. Topologi yang dibuat sudah bisa berjalan secara lokal, tetapi kita belum bisa mengakses jaringan keluar. Maka kita perlu melakukan beberapa hal.
-- Ketikkan **`iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE -s [Prefix IP].0.0/16`** pada router `Foosha`
+- Ketikkan **`iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE -s [Prefix IP].0.0/16`** pada router `Eru`
 **Keterangan:**
   - **iptables:** iptables merupakan suatu tools dalam sistem operasi Linux yang berfungsi sebagai filter terhadap lalu lintas data. Dengan iptables inilah kita akan mengatur semua lalu lintas dalam komputer, baik yang masuk, keluar, maupun yang sekadar melewati komputer kita. Untuk penjelasan lebih lanjut nanti akan dibahas pada Modul 5.
   - **NAT (Network Address Translation):** Suatu metode penafsiran alamat jaringan yang digunakan untuk menghubungkan lebih dari satu komputer ke jaringan internet dengan menggunakan satu alamat IP.
   - **Masquerade:** Digunakan untuk menyamarkan paket, misal mengganti alamat pengirim dengan alamat router.
   - **-s (Source Address):** Spesifikasi pada source. Address bisa berupa nama jaringan, nama host, atau alamat IP.
-- Ketikkan command `cat /etc/resolv.conf` di `Foosha` <br/>
-![create-topology-3](images/create-topology-3.jpg)
+- Ketikkan command `cat /etc/resolv.conf` di `Eru` <br/>
+  ![create-topology-3](images/create-topology-3.png)
 - Ingat-ingat IP tersebut karena IP tersebut merupakan IP DNS, lalu ketikkan command ini di node ubuntu yang lain `echo nameserver [IP DNS] > /etc/resolv.conf`. Jika pada kasus contoh maka command-nya adalah `echo nameserver 192.168.122.1 > /etc/resolv.conf`.
 - Semua node sekarang seharusnya sudah bisa melakukan ping ke google, yang artinya adalah sudah tersambung ke internet
+  ![create-topology-4](images/create-topology-4.png)
 
 ## Ketentuan
-- Praktikan **hanya** diperbolehkan menggunakan image docker `kuuhaku86/gns3-ubuntu`
+- Praktikan **hanya** diperbolehkan menggunakan image docker `nevarre/gns3-debi:latest`
 
 ## Peringatan, Saran, Tips, dan Trik
 - Apa yang diinstal di node **tidak persisten**, artinya saat Anda mengerjakan project tersebut lagi Anda perlu menginstal aplikasi itu kembali
 - Maka **selalu** simpan config di node ke directory `/root` sebelum keluar dari project
 - Anda bisa memasukkan command yang ingin selalu dijalankan di node tersebut ke file `/root/.bashrc` di bagian paling bawah. (Contoh : command iptables dan echo nameserver tadi)</br>
-![tips-trik-1](images/tips-trik-1.jpg)
+  ![tips-trik-1](images/tips-trik-1.png)
+- Selain /root/.bashrc, anda dapat menambahkan startup script dengan meletakkan command pada network config dengan didahului kata up seperti contoh berikut: <br/>
+  ![tips-trik-2](images/tips-trik-2.png)
 - Anda bisa melakukan ekspor project jika bekerja secara tim dengan pergi ke menu `Project settings` -> `Export portable project`.</br>
-![tips-trik-2](images/tips-trik-2.jpg)
+  ![tips-trik-3](images/tips-trik-3.png)
 - Jika mengerjakan menggunakan VM di local kalian sendiri. Kalian bisa mencegah hilangnya aplikasi atau file config dengan mematikan VM di mode save state.
 - Manfaatkan bash scripting untuk install-install aplikasi yang diperlukan sehingga tidak perlu memasukkan command satu-satu, lalu save ke `/root`.
 ## Troubleshooting
@@ -275,4 +278,3 @@ Setelah itu silahkan lanjutkan untuk mengimpor image Ubuntu ke GNS3 [disini](#me
 
 ## Sumber
 - https://docs.gns3.com/docs/
-
