@@ -3,16 +3,21 @@ Modul Pengenalan GNS3
 
 - [Modul Pengenalan GNS3](#modul-pengenalan-gns3)
   - [Apakah GNS3 itu?](#apakah-gns3-itu)
-  - [Instalasi GNS3](#instalasi-gns3)
+  - [Instalasi GNS3 VM](#instalasi-gns3-vm)
     - [Import Image di VirtualBox](#import-image-di-virtualbox)
     - [Import Image di VMWare](#import-image-di-vmware)
     - [Memasukkan Image Ubuntu ke GNS3](#memasukkan-image-ubuntu-ke-gns3)
-  - [Penggunaan GNS3](#penggunaan-gns3)
-    - [Setup IP](#setup-ip)
-      - [Pembagian Prefix IP](#pembagian-prefix-ip)
-      - [Setup IP di Node](#setup-ip-di-node)
+  - [Instalasi GNS3 Client](#instalasi-gns3-client)
+    - [Download GNS3 Client](#instalasi-gns3-client)
+    - [Setup GNS3 Client](#instalasi-gns3-client)
+  - [Penggunaan GNS3 Web](#penggunaan-gns3-web)
+    - [Setup IP di Node](#setup-ip-di-node)
     - [Akses Sebuah Node ke Internet](#akses-sebuah-node-ke-internet)
     - [Membuat Topologi](#membuat-topologi)
+  - [Penggunaan GNS3 Client](#penggunaan-gns3-client)
+    - [Setup IP di Node GNS3 Client](#setup-ip-di-node-gns3-client)
+    - [Akses Sebuah Node ke Internet di Client](#akses-sebuah-node-ke-internet-di-client)
+    - [Membuat Topologi di Client](#membuat-topologi-di-client)
   - [Ketentuan](#ketentuan)
   - [Peringatan, Saran, Tips, dan Trik](#peringatan-saran-tips-dan-trik)
   - [Troubleshooting](#troubleshooting)
@@ -21,13 +26,13 @@ Modul Pengenalan GNS3
 ## Apakah GNS3 itu?
 **GNS3 (Graphical Network Simulator-3)** adalah alat yang membantu Anda untuk bisa menjalankan sebuah simulasi dari topologi kecil yang hanya terdiri dari beberapa alat saja di komputer Anda sampai dengan topologi yang memiliki banyak alat yang di-hosting di beberapa server.
 
-## Instalasi GNS3
+## Instalasi GNS3 VM
 ### Import Image di VirtualBox
 1. Install VirtualBox
 Silahkan mendownload dari link berikut [VirtualBox 7.0](https://www.oracle.com/virtualization/technologies/vm/downloads/virtualbox-downloads.html).
 
 2. Download Image VM GNS3
-Silahkan mendowload dari link berikut [GNS3 VM 2.2.42](https://github.com/GNS3/gns3-gui/releases/download/v2.2.42/GNS3.VM.VirtualBox.2.2.42.zip). Sehabis itu langsung saja extract.
+Silahkan mendowload dari link berikut [GNS3 VM 3.0.5](https://github.com/GNS3/gns3-gui/releases/download/v3.0.5/GNS3.VM.VirtualBox.3.0.5.zip). Sehabis itu langsung saja extract.
 
 3. Import file .ova ke VirtualBox
 
@@ -66,7 +71,7 @@ Setelah itu silahkan lanjutkan untuk mengimpor image Ubuntu ke GNS3 [disini](#me
 Silahkan mendownload dari [VMware Workstation 17](https://www.vmware.com/products/workstation-pro/workstation-pro-evaluation.html).
 
 2. Download Image VM GNS3
-Silahkan mendowload dari [GNS3 VM 2.2.42](https://github.com/GNS3/gns3-gui/releases/download/v2.2.42/GNS3.VM.VMware.Workstation.2.2.42.zip). Sehabis itu langsung saja extract.
+Silahkan mendowload dari [GNS3 VM 3.0.5](https://github.com/GNS3/gns3-gui/releases/download/v3.0.5/GNS3.VM.VMware.Workstation.3.0.5.zip). Sehabis itu langsung saja extract.
 
 3. Import file .ova ke VMWare dan namai VM.
 
@@ -96,101 +101,73 @@ Setelah itu silahkan lanjutkan untuk mengimpor image Ubuntu ke GNS3 [disini](#me
 ### Memasukkan Image Ubuntu ke GNS3
 
 1. Import image ubuntu
-  - Klik `Go to preferences`
-  - Klik `Docker`
-  - Klik `Add Docker container template`
-  - `Server type` pilih `Run this Docker container locally`
-  - Klik `Docker Virtual Machine`, pilih `New image` isikan `danielcristh0/ubuntu-bionic:1.1` di Image name<br>
-  ![insert-image-1](images/insert-imaget-2.jpg)
-  - Klik `Container name` masukkan `ubuntu-1` sebagai nama container
-  - Klik `Network adapters` dan masukkan angka 4
-  - Kosongi bagian `Start command`.
-  - Lalu klik tombol `Add template` di bawah sendiri
+  - Klik `Open menu` pada kiri atas <br/>
+    ![insert-image-1](images/insert-image-1.png)
+  - Pilih `Template preferences` <br/>
+    ![insert-image-2](images/insert-image-2.png)
+  - Pilih `Docker` <br/>
+    ![insert-image-3](images/insert-image-3.png)
+  - Klik `Add Docker container template` <br/>
+    ![insert-image-4](images/insert-image-4.png)
+  - `Controller type` pilih `Run this Docker container locally` <br/>
+    ![insert-image-5](images/insert-image-5.png) 
+  - Klik `Docker Virtual Machine`, pilih `New image` isikan `nevarre/gns3-debi:latest` di Image name <br/>
+    ![insert-image-6](images/insert-image-6.png)
+  - Klik `Container name` masukkan `ervn-debi` sebagai nama container <br/>
+    ![insert-image-7](images/insert-image-7.png)
+  - Klik `Network adapters` dan masukkan angka 4 <br/>
+    ![insert-image-8](images/insert-image-8.png)
+  - Biarkan bagian `Start command`, `Console type`, `Auxiliary console type`, dan `Environment`
+  - Lalu klik tombol `Add template` di bawah sendiri <br/>
+    ![insert-image-9](images/insert-image-9.png)
 
 2. Coba image yang telah di-import
-  - Klik `Servers` di kiri atas
-  - Klik `local`
-  - Klik `Add blank project`
+  - Klik `Open menu` di kiri atas <br/>
+    ![insert-image-1](images/insert-image-1.png)
+  - Pilih `Projects` <br/>
+    ![test-image-1](images/test-image-1.png)
+  - Klik `Add blank project` <br/>
+    ![test-image-2](images/test-image-2.png)
   - Masukkan nama project (terserah)
-  - Klik `Add project`
-  - Klik tombol `Add a node` di samping kiri <br/>
-![test-image-1](images/test-image-1.jpg)
-  - Lalu tarik `ubuntu-1` ke area kosong di halaman
+  - Klik `Add project` <br/>
+    ![test-image-3](images/test-image-3.png)
+  - Klik tombol `Add a node` di atas <br/>
+    ![test-image-4](images/test-image-4.png)
+  - Lalu tarik `ervn-debi` ke area kosong di halaman <br/>
+    ![test-image-5](images/test-image-5.png)
   - Tunggu sampai loading selesai
-  - Jika berhasil akan menampilkan tampilan yang mirip dengan ini
-![test-image-2](images/test-image-2.jpg)
+  - Jika berhasil akan menampilkan tampilan yang mirip dengan ini <br/>
+    ![test-image-6](images/test-image-6.png)
   - Kita bisa start dengan klik kanan di node dan klik `Start` <br/>
-![test-image-3](images/test-image-3.jpg)
+    ![test-image-7](images/test-image-7.png)
 
 3. Akses node
   - Bisa dilakukan dengan `Web console`  <br/>
-![akses-node-1](images/akses-node-1.jpg)
-  - Bisa dilakukan menggunakan command `telnet [IP VM] [Port node]` di terminal lokal pc kita, jika menggunakan contoh di gambar, maka commandnya adalah `telnet 192.168.0.16 5000`
-![akses-node-2](images/akses-node-2.jpg)
+    ![akses-node-1](images/akses-node-1.png)
+  - Bisa dilakukan menggunakan command `telnet [IP VM] [Port node]` di terminal lokal pc kita, jika menggunakan contoh di gambar, maka commandnya adalah `telnet 10.15.43.32 5006` <br/>
+    ![akses-node-2](images/akses-node-2.png)
   - Jika menggunakan telnet, hati-hati jika ingin keluar dari node. Gunakan `Ctrl + ]` lalu ketik quit untuk keluar dari node.
   - Jika command prompt tidak kunjung keluar, bisa klik enter berkali-kali sampai keluar
 
-## Penggunaan GNS3
+## Penggunaan GNS3 Web
 
-### Setup IP
-Dalam praktikum jaringan komputer, Anda akan sering melakukan setting untuk IP dari node yang digunakan. Lalu untuk membedakan ip jaringan dari masing-masing kelompok, maka 2 oktet awal (Prefix IP) dari IP yang digunakan sudah ditentukan seperti di bawah.
+### Setup IP di Node
 
-#### Pembagian Prefix IP
-
-**IT**
-
-| Kelompok | Prefix IP |
-|----------|-----------|
-| IT01     | 10.64     |
-| IT02     | 192.234   |
-| IT03     | 10.65     |
-| IT04     | 192.235   |
-| IT05     | 10.66     |
-| IT06     | 192.236   |
-| IT07     | 10.67     |
-| IT08     | 192.237   |
-| IT09     | 10.68     |
-| IT10     | 192.238   |
-| IT11     | 10.69     |
-| IT12     | 192.239   |
-| IT13     | 10.70     |
-| IT14     | 192.240   |
-| IT15     | 10.71     |
-| IT16     | 192.241   |
-| IT17     | 10.72     |
-| IT18     | 192.242   |
-| IT19     | 10.73     |
-| IT20     | 192.243   |
-| IT21     | 10.74     |
-| IT22     | 192.244   |
-| IT23     | 10.75     |
-| IT24     | 192.245   |
-| IT25     | 10.76     |
-| IT26     | 192.246   |
-| IT27     | 10.77     |
-| IT28     | 192.247   |
-| IT29     | 10.78     |
-| IT30     | 192.248   |
-| IT31     | 192.232   |
-| IT32     | 10.63     |
-| IT33     | 192.233   |
-
-Jika ada perintah menggunakan IP `[Prefix IP].1.2` maka contoh jika saya adalah kelompok A2 IP adalah `10.0.1.2`
-
-#### Setup IP di Node
-
-1. Klik kanan pada node, buka `Configure`
-2. Pada menu `General settings`, cari tombol `Edit network configuration`
+1. Klik kanan pada node, buka `Configure` <br/>
+   ![setup-ip-1](images/setup-ip-1.png)
+2. Pada menu `General settings`, cari tombol `Edit network configuration` <br/>
+   ![setup-ip-2](images/setup-ip-2.png)
 3. Di situ kalian bisa setup IP sesuai dengan interface yang digunakan. Interface adalah sesuatu yang digunakan untuk menghubungkan dua device
 
 ### Akses Sebuah Node ke Internet
-1. Buka menu Add a Node
+1. Buka menu Add a Node <br/>
+   ![test-image-4](images/test-image-4.png)
 2. Tarik NAT ke area kosong <br/>
-![using-internet-1](images/using-internet-1.jpg)
+  ![using-internet-1](images/using-internet-1.png)
 3. Gunakan aktifkan menu `Add a Link` <br/>
-![using-internet-2](images/using-internet-2.jpg)
+  ![using-internet-2](images/using-internet-2.png)
 4. Lalu klik node, pilih interface `eth0`, dan klik node NAT yang ditarik tadi <br/>
-![using-internet-3](images/using-internet-3.jpg)
+  ![using-internet-3](images/using-internet-3.png)
 5. Lalu konfigurasi IP dari node ubuntu
   - Cari 2 line yang seperti ini
   ```
@@ -202,14 +179,16 @@ Jika ada perintah menggunakan IP `[Prefix IP].1.2` maka contoh jika saya adalah 
   auto eth0
   iface eth0 inet dhcp
   ```
-6. Start node
-7. Akses console dari node, dan coba ping ke google, jika berhasil maka settingan Anda benar
-![using-internet-4](images/using-internet-4.jpg)
-8. Node ini akan nanti digunakan sebagai router untuk modul ini, ganti nama node ini menjadi `Foosha` dengan fitur `Change hostname` di node, dan juga ganti symbol ke simbol router dengan fitur `Change symbol`
+6. Start node <br/>
+   ![test-image-7](images/test-image-7.png)
+7. Akses console dari node, dan coba ping ke google, jika berhasil maka settingan Anda benar <br/>
+   ![using-internet-4](images/using-internet-4.png)
+8. Node ini akan nanti digunakan sebagai router untuk modul ini, ganti nama node ini menjadi `Eru` dengan fitur `Change hostname` di node, dan juga ganti symbol ke simbol router dengan fitur `Change symbol`
+   ![using-internet-5](images/using-internet-5.png)
 
 ### Membuat Topologi
 1. Tambahkan beberapa node ethernet switch dan ubuntu, lalu buat hubungan antar node dan nama-nama dari node hingga seperti di gambar <br/>
-![create-topology-1](images/create-topology-1.jpg)
+  ![create-topology-1](images/create-topology-1.jpg)
 2. Gunakan fitur `Change hostname` untuk merubah nama-nama dari node
 3. Lalu kita setting network masing-masing node dengan fitur `Edit network configuration` seperti yang ditunjukkan [disini](#setup-ip-di-node) sebelumnya, kita bisa menghapus semua settingnya dan mengisi dengan settingan di bawah
   - Foosha
@@ -296,3 +275,4 @@ Jika ada perintah menggunakan IP `[Prefix IP].1.2` maka contoh jika saya adalah 
 
 ## Sumber
 - https://docs.gns3.com/docs/
+
