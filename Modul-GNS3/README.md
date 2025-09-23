@@ -8,16 +8,12 @@ Modul Pengenalan GNS3
     - [Import Image di VMWare](#import-image-di-vmware)
     - [Memasukkan Image Ubuntu ke GNS3](#memasukkan-image-ubuntu-ke-gns3)
   - [Instalasi GNS3 Client](#instalasi-gns3-client)
-    - [Download GNS3 Client](#instalasi-gns3-client)
-    - [Setup GNS3 Client](#instalasi-gns3-client)
+    - [Download GNS3 Client](#download-gns3-client)
+    - [Setup GNS3 Client](#setup-gns3-client)
   - [Penggunaan GNS3 Web](#penggunaan-gns3-web)
     - [Setup IP di Node](#setup-ip-di-node)
     - [Akses Sebuah Node ke Internet](#akses-sebuah-node-ke-internet)
     - [Membuat Topologi](#membuat-topologi)
-  - [Penggunaan GNS3 Client](#penggunaan-gns3-client)
-    - [Setup IP di Node GNS3 Client](#setup-ip-di-node-gns3-client)
-    - [Akses Sebuah Node ke Internet di Client](#akses-sebuah-node-ke-internet-di-client)
-    - [Membuat Topologi di Client](#membuat-topologi-di-client)
   - [Ketentuan](#ketentuan)
   - [Peringatan, Saran, Tips, dan Trik](#peringatan-saran-tips-dan-trik)
   - [Troubleshooting](#troubleshooting)
@@ -149,6 +145,39 @@ Setelah itu silahkan lanjutkan untuk mengimpor image Ubuntu ke GNS3 [disini](#me
   - Jika menggunakan telnet, hati-hati jika ingin keluar dari node. Gunakan `Ctrl + ]` lalu ketik quit untuk keluar dari node.
   - Jika command prompt tidak kunjung keluar, bisa klik enter berkali-kali sampai keluar
 
+## Instalasi GNS3 Client
+### Download GNS3 Client
+1. Download GNS3 Client
+   Silahkan mendownload dari [GNS3 Client 3.0.5](https://github.com/GNS3/gns3-gui/releases/download/v3.0.5/GNS3-3.0.5-all-in-one.exe).
+2. Install GNS3 Client
+   - Klik `Open` untuk membuka installer
+   - Klik `Next` untuk melanjutkan install <br/>
+     ![install-client-1](images/install-client-1.png)
+   - Klik `I Agree` untuk melanjutkan <br/>
+     ![install-client-2](images/install-client-2.png)
+   - Klik `Next` untuk melanjutkan <br/>
+     ![install-client-3](images/install-client-3.png)
+   - Centang `MSCV Runtime 2017`, `GNS3 Desktop`, `Wireshark`, dan `TightVNC Viewer`. Kemudian klik `Next` untuk melanjutkan <br/>
+     ![install-client-4](images/install-client-4.png)
+   - Pilih `Browse` untuk memilih folder destinasi terserah. Kemudian klik `Next` untuk melanjutkan <br/>
+     ![install-client-5](images/install-client-5.png)
+   - Kalau muncul popup traceNG centang `I agree` dan klik `Accept` <br/>
+     ![install-client-6](images/install-client-6.png)
+   - Selanjutnya klik `Continue` saja untuk skip <br/>
+     ![install-client-7](images/install-client-7.png)
+   - Tunggu proses instalasi kemudian klik `Next` <br/>
+     ![install-client-8](images/install-client-8.png)
+   - Klik `No` jika muncul tawaran untuk aplikasi lain <br/>
+     ![install-client-9](images/install-client-9.png)
+   - Instalasi telah selesai, klik `Finish` dengan mencentang `Start GNS3` akan secara otomatis membuka GNS3 Client <br/>
+     ![install-client-10](images/install-client-10.png)
+   
+### Setup GNS3 Client
+1. Setup Remote Server
+   - Ketika membuka GNS3 Client untuk pertama kalinya akan muncul popup, pilih `Connect to a remote controller` kemudian klik `Next` <br/>
+     ![setup-client-1](images/setup-client-1.png)
+   - Pilih `HTTP` untuk protocol, masukkan `10.15.43.32` sebagai host, masukkan `80` untuk port, masukkan kredensial yang sudah diberikan oleh asisten. <br/>
+     ![setup-client-2](images/setup-client-2.png) 
 ## Penggunaan GNS3 Web
 
 ### Setup IP di Node
@@ -278,3 +307,4 @@ Setelah itu silahkan lanjutkan untuk mengimpor image Ubuntu ke GNS3 [disini](#me
 
 ## Sumber
 - https://docs.gns3.com/docs/
+
