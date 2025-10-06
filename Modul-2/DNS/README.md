@@ -290,7 +290,7 @@ DNS Slave adalah DNS cadangan yang akan diakses jika server DNS utama mengalami 
 
 
 
-#### II. Konfigurasi Pada Server Water7
+#### II. Konfigurasi Pada Server Melkor
 
 - Buka *Melkor* dan update package lists dengan menjalankan command:
 
