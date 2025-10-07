@@ -494,7 +494,7 @@ Masuk ke `/etc/apache2/sites-available` kemudian edit `000-default.conf` tambahk
 
 Kemudian `service apache2 start` lalu di load balancer `lynx localhost` untuk mengecek load balancer nya apakah berhasil seperti dibawah
 
-![Load Balancing](<![Load Balancing](</Modul-2/Web%20server/images/load%20balancing%20(1).png>)
+(<![Load Balancing](</Modul-2/Web%20server/images/load%20balancing%20(1).png>)
 )
 
 Tutup lalu buka kembali `lynx localhost`
