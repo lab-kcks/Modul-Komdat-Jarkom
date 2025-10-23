@@ -178,11 +178,11 @@ Beberapa alasan mengapa pengaturan lease time DHCP itu penting adalah sebagai be
 
 ## **1.2 Implementasi**
 
-Setelah memahami konsep, lalu bagaimana implementasinya? Sebelum masuk ke dalam implementasi, kalian harus sudah menguasai semua materi di [**Modul 2**](https://github.com/arsitektur-jaringan-komputer/Modul-Jarkom/tree/master/Modul-2) dan telah memahami topologi yang diberikan untuk Modul 3 ini! Jika belum, silakan kembali ke [**Modul 2**](https://github.com/arsitektur-jaringan-komputer/Modul-Jarkom/tree/master/Modul-2) dan pelajari dengan seksama. Pelajari juga (**editorial**)[https://github.com/arsitektur-jaringan-komputer/Editorial-Praktikum-Jaringan-Komputer] yang telah diberikan! 
+Setelah memahami konsep, lalu bagaimana implementasinya? Sebelum masuk ke dalam implementasi, kalian harus sudah menguasai semua materi di [**Modul 2**](https://github.com/arsitektur-jaringan-komputer/Modul-Jarkom/tree/master/Modul-2) dan telah memahami topologi yang diberikan untuk Modul 3 ini! Jika belum, silakan kembali ke [**Modul 2**](https://github.com/arsitektur-jaringan-komputer/Modul-Jarkom/tree/master/Modul-2) dan pelajari dengan seksama.  
 
 Tidak hanya itu, kalian masih ingat kan dengan topologi yang kita pakai di modul-modul sebelumnya? 
 
-!![topologi-lawas](https://raw.githubusercontent.com/arsitektur-jaringan-komputer/Modul-Jarkom/master/Modul-GNS3/images/create-topology-1.jpg)
+<img width="839" height="555" alt="Screenshot 2025-10-24 at 01 59 37" src="https://github.com/user-attachments/assets/66075037-88d3-4803-97b5-b3f94e21118b" />
 
 Nah, untuk implementasi DHCP ini, pada subnet yang berisi client, kita tambahkan satu node baru bernama **`Jipangu`**. Kemudian, untuk subnet yang berisi DNS Server dan lainnya, kita tambahkan satu node baru bernama **`Westalis`** yang nantinya akan berperan sebagai **`DHCP Server`**.
 
@@ -533,3 +533,4 @@ Jika *node client* berganti `IP Address` sesuai dengan *range* yang telah dikonf
 # **Love Sign dari Oniel 🙆‍♀️🙆‍♂️**
 
 <img src="https://media.tenor.com/ml0i8eZ4Oe4AAAAC/onieljkt48-jkt48oniel.gif" width="500" height="500">
+
