@@ -4,47 +4,46 @@ Pada bagian ini akan dijelaskan implementasi Load Balancer dalam kehidupan sehar
 
 ## Persiapan
 
-Untuk melakukan deployment aplikasi Laravel pada GNS3, tambahkan image docker `danielcristh0/debian-buster:1.1` pada GNS3 sesuai langkah yang tertera pada [Modul GNS3](https://github.com/arsitektur-jaringan-komputer/Modul-Jarkom/tree/master/Modul-GNS3#memasukkan-image-ubuntu-ke-gns3). Gunakan image tersebut untuk membuat topologi pada GNS3.
+Untuk melakukan deployment aplikasi Laravel pada GNS3, tambahkan image docker `ervn-debi-new` pada GNS3 sesuai langkah yang tertera pada [Modul GNS3](https://github.com/lab-kcks/Modul-Komdat-Jarkom/tree/main/Modul-GNS3). Gunakan image tersebut untuk membuat topologi pada GNS3.
 
 Kemudian buatlah topologi dan lakukan konfigurasi sebagai berikut:
 
-![topologi](assets/topologi-implementasi.png)
+<img width="1025" height="708" alt="image" src="https://github.com/user-attachments/assets/cc1db059-7588-41dc-aa13-f67997a9f027" />
+
 
 ### Melakukan Register Domain pada DNS Server
 
-Lakukan instalasi bind9 sesuai dengan materi [Modul 2](https://github.com/arsitektur-jaringan-komputer/Modul-Jarkom/blob/master/Modul-2/DNS/README.md#12-praktik), kemudian lakukan register domain `implementasi.yyy.com` dengan yyy merupakan nama kelompok.
+Lakukan instalasi bind9 sesuai dengan materi [Modul 2](https://github.com/lab-kcks/Modul-Komdat-Jarkom/tree/main/Modul-2/DNS), kemudian lakukan register domain `modul3.com` .
 
 Tambahkan konfigurasi pada `/etc/bind/named.conf.local` sebagai berikut:
 
 ```sh
-zone "implementasi.yyy.com" {
+zone "modul3.com" {
         type master;
-        file "/etc/bind/implementasi/implementasi.yyy.com";
+        file "/etc/bind/modul3/modul3.com";
 };
 ```
 
-Kemudian aturlah register domain pada file `/etc/bind/implementasi/implementasi.yyy.com` sebagai berikut:
+Kemudian aturlah register domain pada file `/etc/bind/modul3.com` sebagai berikut:
 
 ```
+$TTL    604800          ; Waktu cache default (detik)
+@       IN      SOA     modul3.com. root.modul3.com. (
+                        2025100401 ; Serial (format YYYYMMDDXX)
+                        604800     ; Refresh (1 minggu)
+                        86400      ; Retry (1 hari)
+                        2419200    ; Expire (4 minggu)
+                        604800 )   ; Negative Cache TTL
 ;
-; BIND data file for local loopback interface
-;
-$TTL    604800
-@       IN      SOA     implementasi.yyy.com. root.implementasi.yyy.com. (
-                              2         ; Serial
-                         604800         ; Refresh
-                          86400         ; Retry
-                        2419200         ; Expire
-                         604800 )       ; Negative Cache TTL
-;
-@       IN      NS      implementasi.yyy.com.
-@       IN      A       10.0.2.5 ; IP Load Balancer
-www     IN      CNAME   implementasi.yyy.com.
+
+@       IN      NS      modul3.com.
+@       IN      A       10.40.2.5
 ```
 
 Lakukan uji coba ping DNS pada Client:
 
-![ping](assets/ping.png)
+<img width="464" height="153" alt="image" src="https://github.com/user-attachments/assets/c5d753c4-6acd-40f3-8740-90b746bdb2dd" />
+
 
 ## Deployment
 
@@ -53,16 +52,20 @@ Lakukan uji coba ping DNS pada Client:
 Selanjutnya, agar aplikasi Laravel yang kita buat terkoneksi dengan database, lakukan instalasi mysql-server pada Load Balancer dengan perintah berikut:
 
 ```sh
-apt-get install mariadb-server -y
+apt install mariadb-server -y
 ```
 
 Kemudian nyalakan service mysql dengan perintah berikut
 
 ```sh
-service mysql start
+service mariadb start
 ```
 
 Lakukan konfigurasi mysql sebagai berikut dengan yyy merupakan kode kelompok:
+```sh
+mariadb
+```
+Lalu masukkan query seperti dibawah
 ```sql
 CREATE USER 'kelompokyyy'@'%' IDENTIFIED BY 'passwordyyy';
 CREATE USER 'kelompokyyy'@'localhost' IDENTIFIED BY 'passwordyyy';
@@ -74,7 +77,7 @@ FLUSH PRIVILEGES;
 
 Lakukan akses database dengan menggunakan user yang sudah dibuat kemudian gunakan perintah `SHOW DATABASES;` untuk mengetahui apakah database telah berhasil dibuat:
 
-![show-db](assets/show-db.png)
+<img width="329" height="234" alt="image" src="https://github.com/user-attachments/assets/f61f18f2-0678-4ec4-b923-8eb6704b6c4d" />
 
 Karena database akan diakses oleh tiga worker, tambahkan konfigurasi berikut pada `/etc/mysql/my.cnf`, jangan lupa untuk merestart service setelahnya.
 
@@ -83,22 +86,25 @@ Karena database akan diakses oleh tiga worker, tambahkan konfigurasi berikut pad
 skip-networking=0
 skip-bind-address
 ```
+```sh
+service mariadb restart
+```
 
 Untuk mengecek apakah database sudah dapat diakses melalui Worker, lakukan instalasi mariadb-client pada Worker1 sebagai berikut:
 
 ```sh
-apt-get install mariadb-client -y
+apt install mariadb-client -y
 ```
 
 Kemudian lakukan koneksi pada database dengan perintah berikut:
 
 ```sh
-mariadb --host=10.0.2.5 --port=3306 --user=kelompokyyy --password
+mariadb --host=10.40.2.5 --port=3306 --user=kelompokyyy --password
 ```
 
 Hasilnya adalah sebagai berikut:
 
-![open-connect](assets/open-connection.png)
+<img width="637" height="214" alt="image" src="https://github.com/user-attachments/assets/3011ce7c-6f5b-4612-9005-4e5aa9fd3ba7" />
 
 ### Melakukan Konfigurasi pada Worker
 
@@ -109,45 +115,45 @@ Deployment akan dilakukan pada masing-masing worker. Untuk melakukan deployment,
     Pertama, lakukan update package-list dengan command:
     
     ```sh
-    apt-get update
+    apt update
     ```
 
     Lakukan instalasi package yang diperlukan untuk menambahkan repository PHP.
 
     ```sh
-    apt-get install -y lsb-release ca-certificates apt-transport-https software-properties-common gnupg2
+    apt install -y lsb-release apt-transport-https ca-certificates wget
     ```
 
-    unduh GPG-key dan tambahkan dengan perintah berikut:
+    Unduh dan tambahkan Sury GPG-key:
     
     ```sh
-    curl -sSLo /usr/share/keyrings/deb.sury.org-php.gpg https://packages.sury.org/php/apt.gpg
+    wget -O /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg
     ```
 
-    Tambahkan entri repositori baru untuk paket PHP Ondrej Sury ke worker dengan perintah berikut:
-
+   
+   Tambahkan Repository Sury ke sources list
     ```sh
-    sh -c 'echo "deb [signed-by=/usr/share/keyrings/deb.sury.org-php.gpg] https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list'
+    echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" | tee /etc/apt/sources.list.d/php.list
     ```
 
     Perintah di atas akan menambahkan repository PHP sesuai dengan distro sistem yang digunakan kemudian menuliskannya pada file `php.list`
 
     Kemudian lakukan update repositori dengan perintah
     ```
-    apt-get update
+    apt update
     ```
 
     Setelah itu lakukan instalasi PHP dengan perintah berikut:
     
     ```sh
-    apt-get install php8.0-mbstring php8.0-xml php8.0-cli php8.0-common php8.0-intl php8.0-opcache php8.0-readline php8.0-mysql php8.0-fpm php8.0-curl unzip wget -y
+    apt install php8.0-mbstring php8.0-xml php8.0-cli php8.0-common php8.0-intl php8.0-opcache php8.0-readline php8.0-mysql php8.0-fpm php8.0-curl unzip wget -y
     ```
 
     Lakukan pengecekan versi php dengan mengetikkan `php --version`.
 
     Kemudian, setelah php berhasil diinstall, install nginx yang akan digunakan sebagai webserver
     ```
-    apt-get install nginx -y
+    apt install nginx -y
     ```
 
 2. Lakukan instalasi composer 2
@@ -161,14 +167,14 @@ Deployment akan dilakukan pada masing-masing worker. Untuk melakukan deployment,
     ```
 
     Kemudian lakukan pengecekan versi composer dengan `composer -V` sebagai berikut:
-    ![composer](assets/composer.png)
+   <img width="375" height="39" alt="image" src="https://github.com/user-attachments/assets/3c8e8712-9ab3-49a7-aee1-30faba4dcbc3" />
 
 3. Lakukan persiapan pada web yang akan dideploy
     
     Lakukan instalasi git dengan perintah berikut:
     
     ```sh
-    apt-get install git -y
+    apt install git -y
     ```
     
     Kemudian clone repository yang akan dideploy pada direktori `/var/www`
@@ -185,12 +191,11 @@ Deployment akan dilakukan pada masing-masing worker. Untuk melakukan deployment,
 
     Setelah package (vendor) terinstall, maka akan muncul seperti berikut:
     
-    ![vendor-done](assets/vendor-done.png)
+    <img width="645" height="262" alt="image" src="https://github.com/user-attachments/assets/66168917-cacd-4a67-bd92-d52ccacd361e" />
 
     Kemudian copy `.env.example` menjadi `.env` dan ubah konfigurasi database sesuai dengan kredensial yang sudah dibuat di atas.
 
-    ![env](assets/env.png)
-
+   <img width="386" height="304" alt="image" src="https://github.com/user-attachments/assets/51f081a0-3cba-4a91-8696-c605760fb0c9" />
     Setelah env selesai diset, jalankan perintah berikut pada Worker 1:
 
     ```
@@ -200,18 +205,22 @@ Deployment akan dilakukan pada masing-masing worker. Untuk melakukan deployment,
 
     Perintah di atas akan melakukan migrasi tabel dari Laravel ke Database dan akan melakukan seed data pada class AiringTableSeeder ke database.
 
-    Lakukan pengecekan pada database di LoadBalancer sebagai berikut:
+    Lakukan pengecekan pada database sebagai berikut:
 
-    ![db-content](assets/db-content.png)
+
+   <img width="635" height="218" alt="image" src="https://github.com/user-attachments/assets/eff9ebb5-e02f-46b9-a35e-2432adc86a6f" />
+
+
+   <img width="641" height="332" alt="image" src="https://github.com/user-attachments/assets/b24aaf57-7c1e-4f90-8b4d-454beae633b6" />
 
     Terakhir, generate key pada project laravel dengan perintah berikut:
     ```
     php artisan key:generate
     ```
 
-4. Deployment pada Worker
+5. Deployment pada Worker
 
-    Untuk melakukan deployment pada masing-masing worker, tambahkan virtual host seperti langkah-langkah pada [modul 2](https://github.com/arsitektur-jaringan-komputer/Modul-Jarkom/tree/master/Modul-2/Web%20server#e-setup-load-balancing-di-nginx) sebagai berikut pada file `/etc/nginx/sites-available/implementasi`.
+    Untuk melakukan deployment pada masing-masing worker, tambahkan virtual host seperti langkah-langkah pada [modul 2](https://github.com/lab-kcks/Modul-Komdat-Jarkom/blob/main/Modul-2/Reverse%20Proxy/README.md#362-contoh-implementasi-pada-arsitektur-kita) sebagai berikut pada file `/etc/nginx/sites-available/modul3.com`.
 
     ```
     server {
@@ -237,8 +246,8 @@ Deployment akan dilakukan pada masing-masing worker. Untuk melakukan deployment,
                 deny all;
         }
 
-        error_log /var/log/nginx/implementasi_error.log;
-        access_log /var/log/nginx/implementasi_access.log;
+        error_log /var/log/nginx/modul3_error.log;
+        access_log /var/log/nginx/modul3_access.log;
     }
     ```
 
@@ -249,13 +258,13 @@ Deployment akan dilakukan pada masing-masing worker. Untuk melakukan deployment,
 
     Setelah selesai, buat symlink untuk melakukan enable pada site dengan perintah:
     ```
-    ln -s /etc/nginx/sites-available/implementasi /etc/nginx/sites-enabled/
+    ln -s /etc/nginx/sites-available/modul3 /etc/nginx/sites-enabled/
     ```
 
     Kemudian, untuk memastikan bahwa server web (diasumsikan berjalan sebagai www-data) memiliki izin yang diperlukan untuk mengelola dan mengakses direktori penyimpanan maka jalankan perintah berikut:
 
     ```
-    chown -R www-data.www-data /var/www/laravel-simple-rest-api/storage
+    chown -R www-data:www-data /var/www/laravel-simple-rest-api/storage
     ```
 
     Jalankan service php-fpm dengan perintah berikut:
@@ -276,7 +285,7 @@ Deployment akan dilakukan pada masing-masing worker. Untuk melakukan deployment,
 Load balancer pada modul implementasi ini tidak jaduh berbeda dengan modul-modul sebelumnya. Untuk membuat konfigurasi load balancer, lakukan instalasi nginx pada LoadBalancer:
 
 ```sh
-apt-get install nginx -y
+apt install nginx -y
 ```
 
 Kemudian, untuk konfigurasi load balancer akan menggunakan algoritma Round-Robin secara default, sehingga konfigurasinya adalah sebagai berikut:
@@ -290,7 +299,7 @@ upstream laravel {
 
 server {
         listen 80;
-        server_name implementasi.yyy.com;
+        server_name modul3.com;
 
         location / {
                 proxy_pass http://laravel;
@@ -300,7 +309,7 @@ server {
 
 Jangan lupa untuk membuat symlink dan melakukan restart pada service nginx.
 
-Untuk melakukan testing, buka halaman `implementasi.yyy.com` pada client dengan menggunakan lynx dan curl sehingga hasilnya adalah sebagai berikut:
+Untuk melakukan testing, buka halaman `modul3.com` pada client dengan menggunakan lynx dan curl sehingga hasilnya adalah sebagai berikut:
 
 ![client-laravel](assets/client-laravel.png)
 
@@ -313,7 +322,7 @@ Untuk melakukan testing, lakukan instalasi Apache Benchmark sesuai pada [modul i
 Kemudian lakukan testing pada endpoint `/api/airing/` sebagai berikut:
 
 ```sh
-ab -n 100 -c 10 implementasi.yyy.com/api/airing/
+ab -n 100 -c 10 modul3.com/api/airing/
 ```
 
 Hasilnya adalah sebagai berikut:
@@ -325,11 +334,11 @@ This is ApacheBench, Version 2.3 <$Revision: 1843412 $>
 Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
 Licensed to The Apache Software Foundation, http://www.apache.org/
 
-Benchmarking implementasi.yyy.com (be patient).....done
+Benchmarking modul3.com (be patient).....done
 
 
 Server Software:        nginx/1.14.2
-Server Hostname:        implementasi.yyy.com
+Server Hostname:        modul3.com
 Server Port:            80
 
 Document Path:          /api/airing/
@@ -368,7 +377,7 @@ Percentage of the requests served within a certain time (ms)
 Kemudian naikkan banyaknya request dan concurrency menjadi:
 
 ```
-ab -n 2000 -c 100 implementasi.yyy.com/api/airing/
+ab -n 2000 -c 100 modul3.com/api/airing/
 ```
 
 Hasilnya adalah sebagai berikut:
@@ -378,7 +387,7 @@ This is ApacheBench, Version 2.3 <$Revision: 1843412 $>
 Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
 Licensed to The Apache Software Foundation, http://www.apache.org/
 
-Benchmarking implementasi.yyy.com (be patient)
+Benchmarking modul3.com (be patient)
 Completed 200 requests
 Completed 400 requests
 Completed 600 requests
@@ -393,7 +402,7 @@ Finished 2000 requests
 
 
 Server Software:        nginx/1.14.2
-Server Hostname:        implementasi.yyy.com
+Server Hostname:        modul3.com
 Server Port:            80
 
 Document Path:          /api/airing/
@@ -434,7 +443,7 @@ Percentage of the requests served within a certain time (ms)
 Dari hasil testing di atas, terdapat informasi bahwa terjadi 1921 request yang gagal. Untuk mengetahui errornya, kita dapat melakukan cat pada `/var/log/nginx/error.log`, hasilnya adalah sebagai berikut:
 
 ```
-2023/11/07 05:57:52 [error] 3061#3061: *825 no live upstreams while connecting to upstream, client: 10.0.1.2, server: implementasi.yyy.com, request: "GET /api/airing/ HTTP/1.0", upstream: "http://laravel/api/airing/", host: "implementasi.yyy.com"
+2023/11/07 05:57:52 [error] 3061#3061: *825 no live upstreams while connecting to upstream, client: 10.0.1.2, server: modul3.com, request: "GET /api/airing/ HTTP/1.0", upstream: "http://laravel/api/airing/", host: "modul3.com"
 ```
 
 Error tersebut disebabkan oleh upstream membutuhkan waktu terlalu lama untuk menjawab request dan NGINX menganggap upstream telah gagal dalam memproses permintaan tersebut.
