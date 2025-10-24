@@ -191,12 +191,11 @@ Deployment akan dilakukan pada masing-masing worker. Untuk melakukan deployment,
 
     Setelah package (vendor) terinstall, maka akan muncul seperti berikut:
     
-        <img width="645" height="262" alt="image" src="https://github.com/user-attachments/assets/66168917-cacd-4a67-bd92-d52ccacd361e" />
+    <img width="645" height="262" alt="image" src="https://github.com/user-attachments/assets/66168917-cacd-4a67-bd92-d52ccacd361e" />
 
     Kemudian copy `.env.example` menjadi `.env` dan ubah konfigurasi database sesuai dengan kredensial yang sudah dibuat di atas.
 
-        <img width="386" height="304" alt="image" src="https://github.com/user-attachments/assets/51f081a0-3cba-4a91-8696-c605760fb0c9" />
-
+   <img width="386" height="304" alt="image" src="https://github.com/user-attachments/assets/51f081a0-3cba-4a91-8696-c605760fb0c9" />
     Setelah env selesai diset, jalankan perintah berikut pada Worker 1:
 
     ```
@@ -300,7 +299,7 @@ upstream laravel {
 
 server {
         listen 80;
-        server_name implementasi.yyy.com;
+        server_name modul3.com;
 
         location / {
                 proxy_pass http://laravel;
@@ -310,7 +309,7 @@ server {
 
 Jangan lupa untuk membuat symlink dan melakukan restart pada service nginx.
 
-Untuk melakukan testing, buka halaman `implementasi.yyy.com` pada client dengan menggunakan lynx dan curl sehingga hasilnya adalah sebagai berikut:
+Untuk melakukan testing, buka halaman `modul3.com` pada client dengan menggunakan lynx dan curl sehingga hasilnya adalah sebagai berikut:
 
 ![client-laravel](assets/client-laravel.png)
 
@@ -323,7 +322,7 @@ Untuk melakukan testing, lakukan instalasi Apache Benchmark sesuai pada [modul i
 Kemudian lakukan testing pada endpoint `/api/airing/` sebagai berikut:
 
 ```sh
-ab -n 100 -c 10 implementasi.yyy.com/api/airing/
+ab -n 100 -c 10 modul3.com/api/airing/
 ```
 
 Hasilnya adalah sebagai berikut:
@@ -335,11 +334,11 @@ This is ApacheBench, Version 2.3 <$Revision: 1843412 $>
 Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
 Licensed to The Apache Software Foundation, http://www.apache.org/
 
-Benchmarking implementasi.yyy.com (be patient).....done
+Benchmarking modul3.com (be patient).....done
 
 
 Server Software:        nginx/1.14.2
-Server Hostname:        implementasi.yyy.com
+Server Hostname:        modul3.com
 Server Port:            80
 
 Document Path:          /api/airing/
@@ -378,7 +377,7 @@ Percentage of the requests served within a certain time (ms)
 Kemudian naikkan banyaknya request dan concurrency menjadi:
 
 ```
-ab -n 2000 -c 100 implementasi.yyy.com/api/airing/
+ab -n 2000 -c 100 modul3.com/api/airing/
 ```
 
 Hasilnya adalah sebagai berikut:
@@ -388,7 +387,7 @@ This is ApacheBench, Version 2.3 <$Revision: 1843412 $>
 Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/
 Licensed to The Apache Software Foundation, http://www.apache.org/
 
-Benchmarking implementasi.yyy.com (be patient)
+Benchmarking modul3.com (be patient)
 Completed 200 requests
 Completed 400 requests
 Completed 600 requests
@@ -403,7 +402,7 @@ Finished 2000 requests
 
 
 Server Software:        nginx/1.14.2
-Server Hostname:        implementasi.yyy.com
+Server Hostname:        modul3.com
 Server Port:            80
 
 Document Path:          /api/airing/
@@ -444,7 +443,7 @@ Percentage of the requests served within a certain time (ms)
 Dari hasil testing di atas, terdapat informasi bahwa terjadi 1921 request yang gagal. Untuk mengetahui errornya, kita dapat melakukan cat pada `/var/log/nginx/error.log`, hasilnya adalah sebagai berikut:
 
 ```
-2023/11/07 05:57:52 [error] 3061#3061: *825 no live upstreams while connecting to upstream, client: 10.0.1.2, server: implementasi.yyy.com, request: "GET /api/airing/ HTTP/1.0", upstream: "http://laravel/api/airing/", host: "implementasi.yyy.com"
+2023/11/07 05:57:52 [error] 3061#3061: *825 no live upstreams while connecting to upstream, client: 10.0.1.2, server: modul3.com, request: "GET /api/airing/ HTTP/1.0", upstream: "http://laravel/api/airing/", host: "modul3.com"
 ```
 
 Error tersebut disebabkan oleh upstream membutuhkan waktu terlalu lama untuk menjawab request dan NGINX menganggap upstream telah gagal dalam memproses permintaan tersebut.
