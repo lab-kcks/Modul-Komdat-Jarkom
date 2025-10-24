@@ -460,14 +460,13 @@ host client4 {
     fixed-address 10.40.2.123;
 }
 ```
-
-![image](https://user-images.githubusercontent.com/61197343/139408258-00413d72-cd37-4a6f-8df8-8af62ac81dc2.png)
+<img width="388" height="225" alt="Screenshot 2025-10-24 at 09 17 39" src="https://github.com/user-attachments/assets/25a3c37b-a048-4e96-8a16-76c7002568d6" />
 
 **Penjelasan**:
 
 - Untuk mencari *hardware* *address* milik client4, kamu bisa mengeksekusi perintah `ip a` di client4, kemudian lihat *interface* yang berhubungan dengan `DHCP Relay`. Dalam kasus ini adalah `eth0`, dan lihat pada bagian `link/ether`. Silakan *copy* *address* tersebut dan masukkan pada konfigurasi `isc-dhcp-server` di **DHCP Server**.
 
-![image](https://user-images.githubusercontent.com/61197343/139408469-54699b15-3ce3-43e0-828a-5a1fdef434e5.png)
+<img width="650" height="221" alt="Screenshot 2025-10-24 at 09 18 11" src="https://github.com/user-attachments/assets/0fcb8de3-b85f-41fd-bc1e-ad1ff8a6f5fe" />
 
 - **fixed-address** adalah `IP Address` yang "disewa" tetap oleh **Jipangu**
 
@@ -486,8 +485,7 @@ host client4 {
 ```
 hwaddress ether 'hwaddress_milik_client4'
 ```
-
-![image](https://user-images.githubusercontent.com/61197343/139409129-4ced81d2-2248-4582-ade5-bbba00aaf434.png)
+<img width="428" height="120" alt="Screenshot 2025-10-24 at 09 18 33" src="https://github.com/user-attachments/assets/64281a9d-d5a2-4939-a28b-017469136368" />
 
 **Keterangan**:
 *Hardware addresss* perlu di-_setting_ juga di `/etc/network/interfaces` untuk mencegah bergantinya `hwaddress` saat *project* GNS3 dimatikan atau di-*export*.
@@ -500,7 +498,7 @@ Silakan *restart* *node* client4 di halaman GNS3.
 
 Periksa IP **client4** dengan melakukan `ip a`.
 
-![image](https://user-images.githubusercontent.com/61197343/139409496-78bc3496-a836-4ec9-9aa6-c4dfa778d32d.png)
+<img width="648" height="217" alt="Screenshot 2025-10-24 at 09 21 21" src="https://github.com/user-attachments/assets/e1a0bffc-0694-45ee-a219-41adf7070e74" />
 
 `IP Address` **client4** telah berubah menjadi `10.40.2.123` sesuai dengan *Fixed* *Address* yang diberikan oleh `DHCP Server`. 👋👋👋
 
@@ -523,3 +521,4 @@ Jika *node client* berganti `IP Address` sesuai dengan *range* yang telah dikonf
 ## **Referensi**
 - [https://www.isc.org/dhcp/](https://www.isc.org/dhcp/)
 - [http://www.tcpipguide.com/free/t_DHCPGeneralOperationandClientFiniteStateMachine.htm](http://www.tcpipguide.com/free/t_DHCPGeneralOperationandClientFiniteStateMachine.htm)
+
