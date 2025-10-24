@@ -178,26 +178,22 @@ Beberapa alasan mengapa pengaturan lease time DHCP itu penting adalah sebagai be
 
 ## **1.2 Implementasi**
 
-Setelah memahami konsep, lalu bagaimana implementasinya? Sebelum masuk ke dalam implementasi, kalian harus sudah menguasai semua materi di [**Modul 2**](https://github.com/arsitektur-jaringan-komputer/Modul-Jarkom/tree/master/Modul-2) dan telah memahami topologi yang diberikan untuk Modul 3 ini! Jika belum, silakan kembali ke [**Modul 2**](https://github.com/arsitektur-jaringan-komputer/Modul-Jarkom/tree/master/Modul-2) dan pelajari dengan seksama.  
+![alt text](images/image.png)
 
-Tidak hanya itu, kalian masih ingat kan dengan topologi yang kita pakai di modul-modul sebelumnya? 
-
-<img width="839" height="555" alt="Screenshot 2025-10-24 at 01 59 37" src="https://github.com/user-attachments/assets/66075037-88d3-4803-97b5-b3f94e21118b" />
-
-Nah, untuk implementasi DHCP ini, pada subnet yang berisi client, kita tambahkan satu node baru bernama **`Jipangu`**. Kemudian, untuk subnet yang berisi DNS Server dan lainnya, kita tambahkan satu node baru bernama **`Westalis`** yang nantinya akan berperan sebagai **`DHCP Server`**.
+Nah, untuk implementasi DHCP ini, mari kita lihat pada topologi di atas, node `server` pada kiri bawah berperan sebagai `DHCP Server`. Kemudian, untuk node `router` akan berperan sebagai `DHCP Relay`
 
 
 ### **1.2.1 Instalasi ISC-DHCP-Server**
 
-Pada topologi ini, kita akan menjadikan **Westalis** sebagai DHCP Server. Oleh sebab itu, kita harus meng-_install_ **isc-dhcp-server** di **Westalis** dengan melakukan langkah-langkah sebagai berikut.
+Dikarenakan pada topologi ini, kita akan menjadikan **server** sebagai DHCP Server. Oleh sebab itu, kita harus meng-_install_ **isc-dhcp-server** di **server** dengan melakukan langkah-langkah sebagai berikut.
 
-1. Update _package lists_ di **Westalis** dengan perintah sebagai berikut.
+1. Update _package lists_ di **server** dengan perintah sebagai berikut.
 
 ```
 apt-get update
 ```
 
-1. *Install* **isc-dhcp-server** di **Westalis**.
+1. *Install* **isc-dhcp-server** di **server**.
 
 ```
 apt-get install isc-dhcp-server
@@ -209,8 +205,7 @@ apt-get install isc-dhcp-server
 dhcpd --version
 ```
 
-![image](https://user-images.githubusercontent.com/61197343/139392770-655e93b6-70f9-4cd9-8d67-8323b9cd25dc.png)
-
+![dhcp installation](images/DHCP.png)
 
 ### **1.2.2 Konfigurasi DHCP Server**
 
@@ -224,9 +219,9 @@ Silakan edit *file* konfigurasi `isc-dhcp-server` pada `/etc/default/isc-dhcp-se
 
 ##### A.2. Tentukan *Interface*
 
-Coba perhatikan topologi yang telah kalian buat. Contoh dari topologi yang dibuat adalah `interface` dari **Westalis** yang menuju ke `switch` adalah `eth0`, maka kita akan memilih `interface` `eth0` untuk diberikan layanan DHCP.
+Coba perhatikan topologi yang telah kalian buat. Contoh dari topologi yang dibuat adalah `interface` dari **server** yang menuju ke `switch` adalah `eth0`, maka kita akan memilih `interface` `eth0` untuk diberikan layanan DHCP.
 
-![image](https://user-images.githubusercontent.com/61197343/139393762-9f2f6df2-489d-42bc-84bf-e2270b74f71f.png)
+![DHCP Server Config](images/dhcp-server-config.png)
 
 #### B. Melakukan Konfigurasi pada `isc-dhcp-server`
 
@@ -269,9 +264,9 @@ subnet 'NID' netmask 'Netmask' {
 | 8      | `default-lease-time 'Waktu'`                       | Lama waktu DHCP server meminjamkan `IP Address` kepada client, dalam satuan detik. Default 600 detik                                                                                                                                                                                                      |
 | 9      | `max-lease-time 'Waktu'`                           | Waktu maksimal yang di alokasikan untuk peminjaman IP oleh DHCP server ke client dalam satuan detik. Default 7200 detik                                                                                                                                                                                |
 
-Pada contoh berikut, kita akan menggunakan DNS 202.46.129.2. Maka konfigurasinya menjadi sebagai berikut.
+Pada contoh berikut, kita akan menambahkan 2 subnet untuk dijadikan `DHCP Pool`
 
-![image](https://user-images.githubusercontent.com/61197343/139402619-96aaa7ee-896e-4632-b80c-621d0a8781b8.png)
+![DHCPD Config](images/dhcpd-config.png)
 
 ##### A.3. Restart Service `isc-dhcp-server` Dengan Perintah
 
@@ -292,11 +287,15 @@ Selamat 🎉, konfigurasi `DHCP Server` telah selesai!
 
 ### **1.2.3 Konfigurasi DHCP Relay**
 
-Jika memang membutuhkan `DHCP Relay`, maka langkah-langkah berikut harus dilakukan pada perangkat yang dijadikan sebagai `DHCP Relay` (umumnya salah satu *router* yang terhubung dengan `DNS Server`).  Maka, *router* **Foosha** akan menjadi DHCP Relay. Langkah-langkah yang harus dilakukan adalah sebagai berikut.
+Perlu diketahui bahwa DHCP Relay tidak selalu diperlukan. Jika DHCP Server sudah berada di subnet yang sama dengan client yang dituju, maka DHCP Relay tidak dibutuhkan.
+
+Namun, jika DHCP Server dan client berada di subnet yang berbeda (contoh: Server di subnet `10.40.1.0` sementara Client3 berada di subnet `10.40.2.0`), maka kita wajib menggunakan DHCP Relay.
+
+Maka, langkah-langkah berikut harus dilakukan pada perangkat yang dijadikan sebagai DHCP Relay (dalam kasus ini, adalah node router).
 
 #### A. Melakukan Instalasi 
 
-Lakukan beberapa instalasi sebelum melakukan konfigurasi pada **Foosha** yang dijadikan sebagai `DHCP Relay`. Instalasi yang dilakukan adalah sebagai berikut.
+Lakukan beberapa instalasi sebelum melakukan konfigurasi pada **router** yang dijadikan sebagai `DHCP Relay`. Instalasi yang dilakukan adalah sebagai berikut.
 
 ```
 apt-get update
@@ -310,13 +309,13 @@ Pada `/etc/default/isc-dhcp-relay` lakukan konfigurasi berikut.
 
 ```
 SERVERS="[IP Address dari DHCP Server]"  
-INTERFACES="eth1 eth2"
+INTERFACES="[Interface_ke_Client] [Interface_ke_Server]"
 OPTIONS=
 ```
 
-Isi dari `INTERFACES=` harus menyesuaikan jumlah *interface* *output* yang terhubung dengan *client*. Pada kasus ini, terdapat 2 *interface* *output* yang terhubung dengan *client*, yaitu `eth1` dan `eth2`. 
+Isi dari `INTERFACES=` harus mencakup **semua** interface yang akan terlibat dalam proses relay, yaitu interface yang mengarah ke Client dan interface yang mengarah ke Server. Pada kasus ini, `eth1` adalah interface yang mengarah ke server dan `eth2` adalah interface yang mengarah ke client. 
 
-!![eth](https://raw.githubusercontent.com/arsitektur-jaringan-komputer/Modul-Jarkom/nur-change/Modul-3/DHCP/images/ethrelay.png)
+![eth](images/eth-relay.png)
 
 Tidak lupa, `SERVERS=` berisi `IP Address` dari `DHCP Server` yang terhubung.
 
@@ -330,9 +329,10 @@ net.ipv4.ip_forward=1
 
 Konfigurasi tersebut digunakan untuk mengaktifkan `IP Forwarding`. Kemudian, *restart* *service* `isc-dhcp-relay`.
 
->Apa itu `IP Forwarding`? `IP Forwarding` adalah fitur yang memungkinkan *router* untuk meneruskan paket dari suatu jaringan ke jaringan lainnya. *Router* memiliki minimal dua *interface* jaringan, misal *interface* A terhubung ke jaringan A dan *interface* B terhubung ke jaringan B. Ketika ada paket IP masuk dari jaringan A menuju ke jaringan B, maka *router* akan meneruskan (*forward*) paket tersebut dari *interface* A ke *interface* B. Demikian pula sebaliknya.
+>Apa itu `IP Forwarding`? `IP Forwarding` adalah fitur yang memungkinkan *Router* untuk meneruskan paket dari suatu jaringan ke jaringan lainnya. *Router* memiliki minimal dua *interface* jaringan, misal *interface* A terhubung ke jaringan A dan *interface* B terhubung ke jaringan B. Ketika ada paket IP masuk dari jaringan A menuju ke jaringan B, maka *router* akan meneruskan (*forward*) paket tersebut dari *interface* A ke *interface* B. Demikian pula sebaliknya.
 
 ```
+sysctl -p
 service isc-dhcp-relay restart
 ```
 
@@ -342,66 +342,55 @@ Selamat 🎉, konfigurasi `DHCP Relay` telah selesai!
 
 ### **1.2.4 Konfigurasi DHCP Client**
 
-Setelah mengonfigurasi *server*, kita juga perlu mengonfigurasi *interface* *client* supaya bisa mendapatkan layanan dari `DHCP Server`. Di dalam topologi ini, contoh *client*-nya adalah **Alabasta**, **Loguetown**, dan **Jipangu**.
+Setelah mengonfigurasi *server*, kita juga perlu mengonfigurasi *interface* *client* supaya bisa mendapatkan layanan dari `DHCP Server`. Di dalam topologi ini, contoh *client*-nya adalah **Client3**, dan **Client4**.
 
 #### A. Mengonfigurasi *Client*
 
-##### A.1. Periksa IP Alabasta dengan `ip a`
+##### A.1. Periksa IP Client1
 
-![image](https://user-images.githubusercontent.com/61197343/139403919-e197fc94-8146-4b2b-812e-b2d4cbc70dda.png)
+![alt text](images/ip-static.png)
 
-Dari konfigurasi sebelumnya, **Alabasta** telah diberikan `IP Address` statis [Prefix IP].1.3.
+Dari konfigurasi sebelumnya, **Client1** telah diberikan `IP Address` statis 10.40.1.3
 
-##### A.2. Buka `/etc/network/interfaces` untuk Mengonfigurasi *Interface* **Alabasta**
+##### A.2. Edit konfigurasi interface Cleint1
 
-Silakan edit file `/etc/network/interfaces`.
-
-##### A.3. *Comment* atau Hapus Konfigurasi yang Lama (Konfigurasi `IP Address` Statis)
-
-Lalu tambahkan konfigurasi berikut.
+Hapus konfigurasi `IP Address` statis 10.40.1.3, Lalu tambahkan konfigurasi berikut.
 
 ```
 auto eth0
 iface eth0 inet dhcp
 ```
 
-![image](https://user-images.githubusercontent.com/61197343/139404262-352673c1-c1f7-4d51-8ba0-b5c2d8919cda.png)
-
 **Keterangan**:
 
-- **eth0** adalah *interface* yang digunakan *client*.
+- **eth0** adalah *interface* yang digunakan *Client1*.
 - `iface eth0 inet dhcp`: memberikan konfigurasi DHCP pada *interface* eth0, bukan konfigurasi statis.
 
 ##### A.4. Restart Alabasta
 
-Untuk melakukan *restart* Alabasta, silakan menuju `GNS3 → klik kanan Alabasta → klik Stop → klik kanan kembali Alabasta → klik Start`.
+Untuk melakukan *restart* Client1, silakan menuju `GNS3 → klik kanan Client1 → klik Stop → klik kanan kembali Client1 → klik Start`.
 
 
 #### B. Testing
 
-Cek kembali `IP Address` **Alabasta** dengan menjalankan `ip a`.
+Cek kembali `IP Address` **Client1** dengan menjalankan `ip a`.
 
-![image](https://user-images.githubusercontent.com/61197343/139404826-8740d662-c2e8-44cd-901b-1398ad328fce.png)
+![Cek IP Address](images/ip-a.png)
 
-Periksa juga apakah **Alabasta** sudah mendapatkan `DNS Server` sesuai konfigurasi di `DHCP Server`. Periksa `/etc/resolv.conf` dengan menggunakan perintah sebagai berikut.
-
-![image](https://user-images.githubusercontent.com/61197343/139404948-a7c6aea2-4557-4c41-997d-732c893b487e.png)
-
-Bila `IP Address` dan nameserver **Alabasta** telah berubah sesuai dengan konfigurasi yang diberikan oleh DHCP, maka selamat kalian telah berhasil! 🎉🎉
+Bila `IP Address` dan nameserver **Client1** telah berubah sesuai dengan konfigurasi yang diberikan oleh DHCP, maka selamat kalian telah berhasil! 🎉🎉
 
 **Keterangan**:
 
-- Jika IP **Alabasta** masih belum berubah, jangan panik. Silakan *restart* kembali *node* melalui halaman GNS3.
+- Jika IP **Client1** masih belum berubah, jangan panik. Silakan *restart* kembali *node* melalui halaman GNS3.
 - Jika masih belum berubah juga, jangan buru-buru bertanya. Coba periksa lagi semua konfigurasi yang telah kalian lakukan, mungkin terdapat kesalahan penulisan.
 
-#### C. Lakukan kembali langkah - langkah di atas pada client Loguetown dan Jipangu
+#### C. Lakukan kembali langkah - langkah di atas pada client lainnya
 
-- Client **Loguetown** dan **Jipangu**.
+- Client2
 
-![image](https://user-images.githubusercontent.com/61197343/139405760-ff97af44-1e02-4dde-b67c-4816e8a0c786.png)
+![alt text](images/ip-client.png)
 
-
-Setelah `IP Address` dipinjamkan ke sebuah client, maka `IP Address` tersebut tidak akan diberikan ke *client* lain. Buktinya, tidak ada *client* yang mendapatkan `IP Address` yang sama.
+Setelah `IP Address` dipinjamkan ke sebuah client, maka `IP Address` tersebut tidak akan diberikan ke *client* lain. Buktinya, *Client2* tidak mendapatkan `IP Address` yang sama dengan *Client1*.
 
 ---
 
