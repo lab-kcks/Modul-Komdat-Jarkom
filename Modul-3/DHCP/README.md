@@ -23,7 +23,7 @@ Materi pada modul ini akan cukup banyak dengan *outline* sebagai berikut.
     - [**1.2.2 Konfigurasi DHCP Server**](#122-konfigurasi-dhcp-server)
       - [A. Menentukan *Interface* yang akan Diberi Layanan DHCP](#a-menentukan-interface-yang-akan-diberi-layanan-dhcp)
         - [A.1. Buka *File* Konfigurasi *Interface*](#a1-buka-file-konfigurasi-interface)
-        - [A.2. Tentukan *Interface*](#a2-tentukan-interface)
+        - [A.2. Tentukan *Interface*](#a2-tentukan-interface) 
       - [B. Melakukan Konfigurasi pada `isc-dhcp-server`](#b-melakukan-konfigurasi-pada-isc-dhcp-server)
         - [B.1. Buka *File* Konfigurasi DHCP](#b1-buka-file-konfigurasi-dhcp)
         - [B.2. Tambahkan *Script* Konfigurasi](#b2-tambahkan-script-konfigurasi)
@@ -33,13 +33,11 @@ Materi pada modul ini akan cukup banyak dengan *outline* sebagai berikut.
       - [B. Melakukan Konfigurasi pada `isc-dhcp-relay`](#b-melakukan-konfigurasi-pada-isc-dhcp-relay)
       - [C. Melakukan Konfigurasi IP Forwarding](#c-melakukan-konfigurasi-ip-forwarding)
     - [**1.2.4 Konfigurasi DHCP Client**](#124-konfigurasi-dhcp-client)
-      - [A. Mengonfigurasi *Client*](#a-mengonfigurasi-client)
-        - [A.1. Periksa IP Alabasta dengan `ip a`](#a1-periksa-ip-alabasta-dengan-ip-a)
-        - [A.2. Buka `/etc/network/interfaces` untuk Mengonfigurasi *Interface* **Alabasta**](#a2-buka-etcnetworkinterfaces-untuk-mengonfigurasi-interface-alabasta)
-        - [A.3. *Comment* atau Hapus Konfigurasi yang Lama (Konfigurasi `IP Address` Statis)](#a3-comment-atau-hapus-konfigurasi-yang-lama-konfigurasi-ip-address-statis)
-        - [A.4. Restart Alabasta](#a4-restart-alabasta)
+      - [A. Mengonfigurasi Client](#a-mengonfigurasi-client)
+        - [A.1. Periksa IP Client1](#a1-periksa-ip-client1)
+        - [A.2. Edit konfigurasi interface Cleint1](#a2-edit-konfigurasi-interface-cleint1)
+        - [A.3. Restart Client1](#a3-restart-client1)
       - [B. Testing](#b-testing)
-      - [C. Lakukan kembali langkah - langkah di atas pada client Loguetown dan Jipangu](#c-lakukan-kembali-langkah---langkah-di-atas-pada-client-loguetown-dan-jipangu)
     - [**1.2.5 Leasing Times**](#125-leasing-times)
     - [**1.2.6 Fixed Address**](#126-fixed-address)
       - [A. Konfigurasi `DHCP Server` di *Router* Foosha](#a-konfigurasi-dhcp-server-di-router-foosha)
@@ -54,7 +52,6 @@ Materi pada modul ini akan cukup banyak dengan *outline* sebagai berikut.
     - [**1.2.7 Menguji Konfigurasi DHCP pada Topologi**](#127-menguji-konfigurasi-dhcp-pada-topologi)
   - [**Soal Latihan**](#soal-latihan)
   - [**Referensi**](#referensi)
-- [**Love Sign dari Oniel 🙆‍♀️🙆‍♂️**](#love-sign-dari-oniel-️️)
 
 </br>
 
@@ -366,7 +363,7 @@ iface eth0 inet dhcp
 - **eth0** adalah *interface* yang digunakan *Client1*.
 - `iface eth0 inet dhcp`: memberikan konfigurasi DHCP pada *interface* eth0, bukan konfigurasi statis.
 
-##### A.4. Restart Alabasta
+##### A.3. Restart Client1
 
 Untuk melakukan *restart* Client1, silakan menuju `GNS3 → klik kanan Client1 → klik Stop → klik kanan kembali Client1 → klik Start`.
 
@@ -510,4 +507,5 @@ Jika *node client* berganti `IP Address` sesuai dengan *range* yang telah dikonf
 ## **Referensi**
 - [https://www.isc.org/dhcp/](https://www.isc.org/dhcp/)
 - [http://www.tcpipguide.com/free/t_DHCPGeneralOperationandClientFiniteStateMachine.htm](http://www.tcpipguide.com/free/t_DHCPGeneralOperationandClientFiniteStateMachine.htm)
+
 
