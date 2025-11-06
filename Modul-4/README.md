@@ -11,7 +11,7 @@
   - Merveille (50 Host) 
   - Rakesh (20 Host) 
   - Enies Loby (10 Host) 
-2. Menginstall *Cisco Packet Tracer* versi terbaru (_latest_), dapat di download di https://www.netacad.com/courses/packet-tracer
+2. Menginstall *Cisco Packet Tracer* versi terbaru (_latest_) sesuai dengan spesifikasi device kamu, dapat di download di https://www.netacad.com/resources/lab-downloads
 
 # SUBNETTING AND ROUTING
 
@@ -150,8 +150,8 @@ Rentang IP Publik adalah selain rentang IP Privat di atas.
 
 Dari contoh tersebut, muncullah salah satu konfigurasi paling dasar dalam penyelesaian permasalahan ini yaitu pembagian alamat IP untuk setiap laboratorium di gedung Departemen Informatika, seperti :
 
-1.  Laboratorium LP memiliki jaringan dengan subnet **10.151.34.0/24**
-2.  Laboratorium AJK memiliki jaringan dengan subnet **10.151.36.0/24**
+1.  Laboratorium SOC memiliki jaringan dengan subnet **10.151.34.0/24**
+2.  Laboratorium KCKS memiliki jaringan dengan subnet **10.151.36.0/24**
 
 ### Perhitungan Subnet
 
